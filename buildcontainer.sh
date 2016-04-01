@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t origin .
+docker build -t cache .
