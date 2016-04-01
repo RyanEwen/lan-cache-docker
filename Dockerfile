@@ -11,6 +11,8 @@ RUN /build/build.sh
 RUN rm -rf /etc/nginx/conf.d/* /etc/nginx/sites-enabled/*
 ADD origin.conf /etc/nginx/conf.d/
 ADD steam.conf /etc/nginx/conf.d/
+ADD blizzard.conf /etc/nginx/conf.d/
+ADD league.conf /etc/nginx/conf.d/
 
 RUN mkdir -p /var/lib/nginx/body 
 RUN mkdir -p /var/lib/nginx/fastcgi 
