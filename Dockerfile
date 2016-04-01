@@ -14,7 +14,7 @@ ADD steam.conf /etc/nginx/conf.d/
 
 RUN mkdir -p /var/lib/nginx/body 
 RUN mkdir -p /var/lib/nginx/fastcgi 
-RUN mkdir -p /steam/origin
+RUN mkdir -p /cache/origin
 
 ADD nginx.conf /etc/nginx/nginx.conf
 
