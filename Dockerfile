@@ -10,12 +10,12 @@ RUN /build/build.sh
 
 RUN rm -rf /etc/nginx/conf.d/* /etc/nginx/sites-enabled/*
 ADD origin.conf /etc/nginx/conf.d/
+ADD steam.conf /etc/nginx/conf.d/
 
 RUN mkdir -p /var/lib/nginx/body 
 RUN mkdir -p /var/lib/nginx/fastcgi 
 RUN mkdir -p /steam/origin
 
-#RUN echo 'include "/etc/nginx/conf.d/*.conf";' >> /etc/nginx/nginx.conf
 ADD nginx.conf /etc/nginx/nginx.conf
 
 CMD nginx -g "daemon off;" -c /etc/nginx/nginx.conf
