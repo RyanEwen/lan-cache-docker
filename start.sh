@@ -1,4 +1,4 @@
 #!/bin/bash
-mkdir -p /origin/data /origin/logs
+mkdir -p /data/data /data/logs
 
-docker run -it --rm -p 80:80 -v /steam:/origin/data -v /var/log/nginx:/origin/logs cache
+docker run -it --rm -p 80:80 -v /steam:/data/data -v /var/log/nginx:/data/logs cache
