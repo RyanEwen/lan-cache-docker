@@ -26,7 +26,15 @@ dl.wargaming.net
 dl2.wargaming.net
 wg.gcdn.co
 ```
+*Warning*: some services (eg, when downloading the Origin client) require HTTPS access to the 
+hosts that we are hijacking. To avoid connectivity issues, you will need to run an 
+[SNI proxy](https://github.com/dlundquist/sniproxy) to enable pass through of HTTPS traffic. 
 
-Cavaet: we don't MITM HTTPS traffic, so anything attempting to connect to these hosts on port 443 will fail. 
-For example, the Origin client download will fail. You should set up an [SNI proxy](https://github.com/dlundquist/sniproxy) 
-to enable pass through of traffic. 
+You can build and run the sniproxy container in the `sniproxy` directory to achieve this. 
+
+```
+cd sniproxy
+docker build -t sniproxy .
+docker run --name sniproxy -p 443:443 sniproxy
+```
+
