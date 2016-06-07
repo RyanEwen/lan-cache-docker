@@ -26,6 +26,15 @@ dl.wargaming.net
 dl2.wargaming.net
 wg.gcdn.co
 ```
+
+To build and run, do:
+```
+./buildcontainer.sh
+./start.sh
+```
+
+`start.sh` will make a /data/ directory to store logs and cache data in. 
+
 *Warning*: some services (eg, when downloading the Origin client) require HTTPS access to the 
 hosts that we are hijacking. To avoid connectivity issues, you will need to run an 
 [SNI proxy](https://github.com/dlundquist/sniproxy) to enable pass through of HTTPS traffic. 
