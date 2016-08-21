@@ -46,4 +46,5 @@ cd sniproxy
 docker build -t sniproxy .
 docker run --name sniproxy -p 443:443 sniproxy
 ```
-
+### Credits
+In addition to OpenSourceLAN members, this project contains [contributions](https://github.com/OpenSourceLAN/origin-docker/pull/1) from @ChainedHope
