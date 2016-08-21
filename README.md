@@ -25,6 +25,34 @@ Wargaming.net:
 dl.wargaming.net
 dl2.wargaming.net
 wg.gcdn.co
+
+Sony (PS4):
+*.dl.playstation.net 
+*.dl.playstation.net.edgesuite.net 
+dl.playstation.net 
+dl.playstation.net.edgesuite.net 
+pls.patch.station.sony.com;
+
+Microsoft:
+*.download.windowsupdate.com 
+download.windowsupdate.com 
+dlassets.xboxlive.com 
+*.xboxone.loris.llnwd.net 
+xboxone.vo.llnwd.net 
+images-eds.xboxlive.com 
+xbox-mbr.xboxlive.com 
+assets1.xboxlive.com.nsatc.net 
+assets1.xboxlive.com
+
+Hirez:
+hirez.http.internapcdn.net
+
+Epic Games: (not tested, needs custom SSC)
+download.epicgames.com 
+download1.epicgames.com 
+download2.epicgames.com 
+download3.epicgames.com 
+download4.epicgames.com 
 ```
 
 To build and run, do:
