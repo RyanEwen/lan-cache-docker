@@ -26,6 +26,10 @@ dl.wargaming.net
 dl2.wargaming.net
 wg.gcdn.co
 
+### WARNING ###
+Some of the folowing ones may require SSL certificate spoofing to work, and come
+untested. Please test the following in your environment before relying on them. 
+
 Sony (PS4):
 *.dl.playstation.net 
 *.dl.playstation.net.edgesuite.net 
