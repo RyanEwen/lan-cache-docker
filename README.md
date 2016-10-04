@@ -14,6 +14,7 @@ llnw.blizzard.com
 dist.blizzard.com
 blizzard.vo.llnwd.net
 blzddist*.akamaihd.net
+level3.blizzard.com
 
 League of Legends:
 l3cdn.riotgames.com
