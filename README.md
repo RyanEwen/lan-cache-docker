@@ -79,5 +79,31 @@ cd sniproxy
 docker build -t sniproxy .
 docker run --name sniproxy -p 443:443 sniproxy
 ```
+
+### Super Quick Start
+```
+# Start with a clean install of linux, and make sure `/data` is on a volume with plent of disk space.
+
+# Install Docker if you need it - curl sudo bash is terrible, but you're trusting my code anyway :)
+curl -sSL https://get.docker.com | sudo bash
+
+# Get this repo
+git clone https://github.com/OpenSourceLAN/origin-docker.git
+cd origin-docker
+
+# Set your max cache size
+# Edit nginx.conf. Find the proxy_cache_path line and udpate the max_size parameter to the maximum
+# amount of disk space you would like your cache to use
+
+# Build the containers
+./buildcontainer.sh
+
+# Start the cache container (note: uses `--restart=always`, so will auto-start after reboot)
+./start.sh
+
+# Start the SNI proxy container (optional, but recommended)
+docker run --name sniproxy -p 443:443 sniproxy
+```
+
 ### Credits
 In addition to OpenSourceLAN members, this project contains [contributions](https://github.com/OpenSourceLAN/origin-docker/pull/1) from @ChainedHope
