@@ -5,8 +5,13 @@ and you get a fully operational LAN cache. Hooray!
 
 ```
 Steam:
+content[0-9].steampowered.com
 *.cs.steampowered.com
-content[1-9].steampowered.com
+*.steamcontent.com
+client-download.steampowered.com
+*.hsar.steampowered.com.edgesuite.net
+*.akamai.steamstatic.com
+content-origin.steampowered.com
 
 Blizzard:
 dist.blizzard.com.edgesuite.net
