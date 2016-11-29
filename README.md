@@ -108,6 +108,9 @@ cd origin-docker
 
 # Start the SNI proxy container (optional, but recommended)
 docker run --name sniproxy -p 443:443 sniproxy
+
+# Start the DNS server if you need it
+(cd dnsmasq && ./start.sh)
 ```
 
 ### Credits
