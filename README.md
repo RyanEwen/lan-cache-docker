@@ -25,7 +25,7 @@ Some of the folowing may require SSL certificate spoofing to work, and come unte
     git clone https://github.com/RyanEwen/lan-cache-docker.git
     ```
 
-1. Build docker images and spawn containers:
+1. Build docker images and spawn containers (note: `/data` will be created as a symlink to `lan-cache-docker/data`):
 
     ```
     cd lan-cache-docker
@@ -65,7 +65,7 @@ Some of the folowing may require SSL certificate spoofing to work, and come unte
     Address:  192.168.100.205
     ```
 
-    You should see your caching server IP listed twice this time. The caching machine handles the DNS request as well as the caching that URL, to the caching machine IP is returned.
+    You should see your caching server IP listed twice this time. The caching machine handles the DNS request as well as the caching that URL, so the caching machine IP is returned.
 
 * Test caching by downloading a game and watching the logs and cache directories:
     * Use `ll /data/logs/` from the caching machine to check if the logs are filling up. You should see sizes increase as traffic is handled.
@@ -74,10 +74,12 @@ Some of the folowing may require SSL certificate spoofing to work, and come unte
 * Uninstall and redownload the game. You should see it download much quicker this time, without much (if any) internet traffic.
 
 ## How this works
-There are 3 docker images & containers:
+There are 3 docker containers that take care of proxying and caching traffic:
 * `lan-cache-dnsmasq`: Uses Dnsmasq to redirect game download traffic to the local machine.
 * `lan-cache-nginx`: Uses NGINX which is setup to act as a web proxy, caching game downloads on the local machine.
 * `lan-cache-sniproxy`: Uses SNI Proxy which allows HTTPS traffic to pass through to the cached services without decrypting it.
+
+In short: when the machine running these containers is used as a DNS server by other machines, Dnsmasq handles DNS requests to  redirect traffic to the same machine, it is then proxied through NGINX which caches it to disk and serves it out to clients.
 
 ## Updating service URLs to cache
 1. Update the Dnsmasq conf file (`data/dnsmasq-template.conf`) with the new URLs to be handled by the caching machine.
