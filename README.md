@@ -1,117 +1,81 @@
-# LAN Cache in a docker container
+# LAN Cache using Docker and NGINX
 
-Simply expose this container on port 80, and point a bunch of domains to this server's IP address, 
-and you get a fully operational LAN cache. Hooray!
+## Caches the following services for reduced internet traffic and quicker installs:
+* Steam
+* Origin
+* Blizzard
+* League of Legends
 
-```
-Steam:
-content[0-9].steampowered.com
-*.cs.steampowered.com
-*.steamcontent.com
-client-download.steampowered.com
-*.hsar.steampowered.com.edgesuite.net
-*.akamai.steamstatic.com
-content-origin.steampowered.com
+Some of the folowing may require SSL certificate spoofing to work, and come untested. Please test the following in your environment before relying on them.
+* Sony (PS4)
+* Microsoft
+* Hirez
+* Epic Games: (not tested, needs custom SSC)
 
-Blizzard:
-dist.blizzard.com.edgesuite.net
-llnw.blizzard.com
-dist.blizzard.com
-blizzard.vo.llnwd.net
-blzddist*.akamaihd.net
-level3.blizzard.com
+## Quick Start (Linux)
+1. Install Docker if you don't have it:
 
-League of Legends:
-l3cdn.riotgames.com
+    ```
+    curl -sSL https://get.docker.com | sudo bash
+    ```
 
-Origin:
-origin-a.akamaihd.net
+1. Clone this repo onto a volume with lots of storage space:
 
-Wargaming.net:
-dl.wargaming.net
-dl2.wargaming.net
-wg.gcdn.co
+    ```
+    git clone https://github.com/RyanEwen/lan-cache-docker.git
+    ```
 
-### WARNING ###
-Some of the folowing ones may require SSL certificate spoofing to work, and come
-untested. Please test the following in your environment before relying on them. 
+1. Build docker images and spawn containers:
 
-Sony (PS4):
-*.dl.playstation.net 
-*.dl.playstation.net.edgesuite.net 
-dl.playstation.net 
-dl.playstation.net.edgesuite.net 
-pls.patch.station.sony.com;
+    ```
+    cd lan-cache-docker
+    sudo ./setup.sh
+    ```
 
-Microsoft:
-*.download.windowsupdate.com 
-download.windowsupdate.com 
-dlassets.xboxlive.com 
-*.xboxone.loris.llnwd.net 
-xboxone.vo.llnwd.net 
-images-eds.xboxlive.com 
-xbox-mbr.xboxlive.com 
-assets1.xboxlive.com.nsatc.net 
-assets1.xboxlive.com
+1. Test (optional but recommended). See `How to test` below.
 
-Hirez:
-hirez.http.internapcdn.net
+1. Direct traffic to the caching server:
+    * Set your router to use your caching server IP for DNS.
+    Some routers allow you to change the DNS server IPs on the WAN settings page. Failing that, check the LAN settings page. You can also point machines directly to the caching server individually by changing their DNS settings instead.
 
-Epic Games: (not tested, needs custom SSC)
-download.epicgames.com 
-download1.epicgames.com 
-download2.epicgames.com 
-download3.epicgames.com 
-download4.epicgames.com 
-```
+## How to test
+* Point a single machine to use the caching server by setting the DNS server IP to the caching server IP.
+* Flush the DNS cache (use `ipconfig /flushdns` on Windows)
+* Test DNS:
+    ```
+    C:\Users\Ryan> nslookup steampowered.com
+    Server:  UnKnown
+    Address:  192.168.100.205
 
-To build and run, do:
-```
-./buildcontainer.sh
-./start.sh
-```
+    Non-authoritative answer:
+    Name:    steampowered.com
+    Address:  96.7.203.235
+    ```
 
-`start.sh` will make a /data/ directory to store logs and cache data in. 
+    You should see your caching server IP followed by the steampowered.com IP. The caching machine handles the DNS request but does not cache that URL so the original IP is returned.
 
-*Warning*: some services (eg, when downloading the Origin client) require HTTPS access to the 
-hosts that we are hijacking. To avoid connectivity issues, you will need to run an 
-[SNI proxy](https://github.com/dlundquist/sniproxy) to enable pass through of HTTPS traffic. 
+    ```
+    C:\Users\Ryan> nslookup steamcache.cs.steampowered.com
+    Server:  UnKnown
+    Address:  192.168.100.205
 
-You can build and run the sniproxy container in the `sniproxy` directory to achieve this. 
+    Name:    steamcache.cs.steampowered.com
+    Address:  192.168.100.205
+    ```
 
-```
-cd sniproxy
-docker build -t sniproxy .
-docker run --name sniproxy -p 443:443 sniproxy
-```
+    You should see your caching server IP listed twice this time. The caching machine handles the DNS request as well as the caching that URL, to the caching machine IP is returned.
 
-### Super Quick Start
-```
-# Start with a clean install of linux, and make sure `/data` is on a volume with plent of disk space.
+* Download a game and then watch the logs and cache directories:
+    * Use `ll /data/logs/` from the caching machine to check if the logs are filling up. You should see sizes increase as traffic is handled.
+    * Use `du -h -d 1 /data/cache` from the caching machine to see the actual size of each cache.
 
-# Install Docker if you need it - curl sudo bash is terrible, but you're trusting my code anyway :)
-curl -sSL https://get.docker.com | sudo bash
+* Uninstall and redownload the game. You should see it download much quicker this time, without much (if any) internet traffic.
 
-# Get this repo
-git clone https://github.com/OpenSourceLAN/origin-docker.git
-cd origin-docker
+## How this works
+There are 3 docker images & containers:
+* `lan-cache-dnsmasq`: Uses Dnsmasq to redirect game download traffic to the local machine.
+* `lan-cache-nginx`: Runs NGINX which is setup to act as a web proxy, caching game downloads on the local machine.
+* `lan-cache-sniproxy`: Runs SNI Proxy which allows HTTPS traffic to pass through to the cached services without decrypting it.
 
-# Set your max cache size
-# Edit nginx.conf. Find the proxy_cache_path line and udpate the max_size parameter to the maximum
-# amount of disk space you would like your cache to use
-
-# Build the containers
-./buildcontainer.sh
-
-# Start the cache container (note: uses `--restart=always`, so will auto-start after reboot)
-./start.sh
-
-# Start the SNI proxy container (optional, but recommended)
-docker run --name sniproxy -p 443:443 sniproxy
-
-# Start the DNS server if you need it
-(cd dnsmasq && ./start.sh)
-```
-
-### Credits
-In addition to OpenSourceLAN members, this project contains [contributions](https://github.com/OpenSourceLAN/origin-docker/pull/1) from @ChainedHope
+## Credits
+This is a fork of [OpenSourceLAN's origin-docker](https://github.com/OpenSourceLAN/origin-docker) which I decided to dive deep into and ended up reorganizing quite a bit. Credit is due over there :)
