@@ -1,4 +1,4 @@
-# LAN Cache using Docker and NGINX
+# Simple LAN Cache using Docker and NGINX
 
 ## Caches the following services for reduced internet traffic and quicker installs:
 * Steam
@@ -32,6 +32,8 @@ Some of the folowing may require SSL certificate spoofing to work, and come unte
     sudo ./setup.sh
     ```
 
+    The containers will start up automatically at boot, unless manually stopped.
+
 1. Test (optional but recommended). See `How to test` below.
 
 1. Direct traffic to the caching server:
@@ -41,7 +43,7 @@ Some of the folowing may require SSL certificate spoofing to work, and come unte
 ## How to test
 * Point a single machine to use the caching server by setting the DNS server IP to the caching server IP.
 * Flush the DNS cache (use `ipconfig /flushdns` on Windows)
-* Test DNS:
+* Test DNS using `nslookup`:
     ```
     C:\Users\Ryan> nslookup steampowered.com
     Server:  UnKnown
@@ -65,7 +67,7 @@ Some of the folowing may require SSL certificate spoofing to work, and come unte
 
     You should see your caching server IP listed twice this time. The caching machine handles the DNS request as well as the caching that URL, to the caching machine IP is returned.
 
-* Download a game and then watch the logs and cache directories:
+* Test caching by downloading a game and watching the logs and cache directories:
     * Use `ll /data/logs/` from the caching machine to check if the logs are filling up. You should see sizes increase as traffic is handled.
     * Use `du -h -d 1 /data/cache` from the caching machine to see the actual size of each cache.
 
@@ -74,8 +76,27 @@ Some of the folowing may require SSL certificate spoofing to work, and come unte
 ## How this works
 There are 3 docker images & containers:
 * `lan-cache-dnsmasq`: Uses Dnsmasq to redirect game download traffic to the local machine.
-* `lan-cache-nginx`: Runs NGINX which is setup to act as a web proxy, caching game downloads on the local machine.
-* `lan-cache-sniproxy`: Runs SNI Proxy which allows HTTPS traffic to pass through to the cached services without decrypting it.
+* `lan-cache-nginx`: Uses NGINX which is setup to act as a web proxy, caching game downloads on the local machine.
+* `lan-cache-sniproxy`: Uses SNI Proxy which allows HTTPS traffic to pass through to the cached services without decrypting it.
+
+## Updating service URLs to cache
+1. Update the Dnsmasq conf file (`data/dnsmasq-template.conf`) with the new URLs to be handled by the caching machine.
+1. Update the approriate NGINX conf (`data/conf/<relevant-service>.conf`) with the same URLs to cache.
+1. Recreate the containers to pull in the changed conf files (doesn't remove cache or rebuild the docker images):
+    ```
+    (cd docker-dnsmasq && sudo ./run-docker-dnsmasq.sh)
+    (cd docker-nginx && sudo ./run-docker-nginx.sh)
+    ```
+
+## Adding a new service to cache
+1. Update the Dnsmasq conf file (`data/dnsmasq-template.conf`) with the new URLs to be handled by the caching machine.
+1. Create a new NGINX conf (`data/conf/<new-service>.conf`) with the same URLs to cache. I suggest using `origin.conf` as a template.
+1. Create a new cache subdirectory (`data/cache/<new-service>`) and make sure the `proxy_cache_path` setting in your new NGINX conf matches.
+1. Recreate the containers to pull in the changed conf files (doesn't remove cache or rebuild the docker images):
+    ```
+    (cd docker-dnsmasq && sudo ./run-docker-dnsmasq.sh)
+    (cd docker-nginx && sudo ./run-docker-nginx.sh)
+    ```
 
 ## Credits
 This is a fork of [OpenSourceLAN's origin-docker](https://github.com/OpenSourceLAN/origin-docker) which I decided to dive deep into and ended up reorganizing quite a bit. Credit is due over there :)
