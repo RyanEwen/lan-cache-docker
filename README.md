@@ -19,17 +19,23 @@ Some of the folowing may require SSL certificate spoofing to work, and come unte
     curl -sSL https://get.docker.com | sudo bash
     ```
 
+1. Install Docker Compose if you don't have it:
+    ```
+    sudo curl -o /usr/local/bin/docker-compose -L "https://github.com/docker/compose/releases/download/1.15.0/docker-compose-$(uname -s)-$(uname -m)"
+    sudo chmod +x /usr/local/bin/docker-compose
+    ```
+
 1. Clone this repo onto a volume with lots of storage space:
 
     ```
     git clone https://github.com/RyanEwen/lan-cache-docker.git
     ```
 
-1. Build docker images and spawn containers (note: `/data` will be created as a symlink to `lan-cache-docker/data`):
+1. Build docker images and spawn containers:
 
     ```
     cd lan-cache-docker
-    sudo ./setup.sh
+    docker-compose up -d
     ```
 
     The containers will start up automatically at boot, unless manually stopped.
@@ -75,29 +81,29 @@ Some of the folowing may require SSL certificate spoofing to work, and come unte
 
 ## How this works
 There are 3 docker containers that take care of proxying and caching traffic:
-* `lan-cache-dnsmasq`: Uses Dnsmasq to redirect game download traffic to the local machine.
-* `lan-cache-nginx`: Uses NGINX which is setup to act as a web proxy, caching game downloads on the local machine.
-* `lan-cache-sniproxy`: Uses SNI Proxy which allows HTTPS traffic to pass through to the cached services without decrypting it.
+* `dnsmasq`: Uses Dnsmasq to redirect game download traffic to the local machine.
+* `nginx`: Uses NGINX which is setup to act as a web proxy, caching game downloads on the local machine.
+* `sniproxy`: Uses SNI Proxy which allows HTTPS traffic to pass through to the cached services without decrypting it.
 
 In short: when the machine running these containers is used as a DNS server by other machines, Dnsmasq handles DNS requests to  redirect traffic to the same machine, it is then proxied through NGINX which caches it to disk and serves it out to clients.
 
 ## Updating service URLs to cache
-1. Update the Dnsmasq conf file (`data/dnsmasq-template.conf`) with the new URLs to be handled by the caching machine.
-1. Update the approriate NGINX conf (`data/conf/<relevant-service>.conf`) with the same URLs to cache.
+1. Update the Dnsmasq conf file (`data/conf/<relevant-service>.dnsmasq.conf`) with the new URLs to be handled by the caching machine.
+1. Update the approriate NGINX conf (`data/conf/<relevant-service>.nginx.conf`) with the same URLs to cache.
 1. Recreate the containers to pull in the changed conf files (doesn't remove cache or rebuild the docker images):
     ```
-    (cd docker-dnsmasq && sudo ./run-docker-dnsmasq.sh)
-    (cd docker-nginx && sudo ./run-docker-nginx.sh)
+    docker-compose down
+    docker-compose up -d
     ```
 
 ## Adding a new service to cache
-1. Update the Dnsmasq conf file (`data/dnsmasq-template.conf`) with the new URLs to be handled by the caching machine.
-1. Create a new NGINX conf (`data/conf/<new-service>.conf`) with the same URLs to cache. I suggest using `origin.conf` as a template.
-1. Create a new cache subdirectory (`data/cache/<new-service>`) and make sure the `proxy_cache_path` setting in your new NGINX conf matches.
+1. Update the Dnsmasq conf file (`data/conf/<new-service>.dnsmasq.conf`) with the new URLs to be handled by the caching machine.
+1. Create a new NGINX conf (`data/conf/<new-service>.nginx.conf`) with the same URLs to cache. I suggest using `origin.nginx.conf` as a template.
+1. Create a new cache subdirectory (`data/cache/<new-service>`) with a `.gitignore` file and make sure the `proxy_cache_path` setting in your new NGINX conf matches.
 1. Recreate the containers to pull in the changed conf files (doesn't remove cache or rebuild the docker images):
     ```
-    (cd docker-dnsmasq && sudo ./run-docker-dnsmasq.sh)
-    (cd docker-nginx && sudo ./run-docker-nginx.sh)
+    docker-compose down
+    docker-compose up -d
     ```
 
 ## Credits

@@ -6,5 +6,5 @@ RUN apt-get install -y git build-essential libudns0 libudns-dev libpcre3 libpcre
 RUN git clone https://github.com/dlundquist/sniproxy.git
 WORKDIR /sniproxy
 RUN ./autogen.sh && ./configure && make && make install
-ADD sniproxy.conf /etc/sniproxy.conf
+
 CMD sniproxy -f

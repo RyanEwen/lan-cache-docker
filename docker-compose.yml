@@ -1,0 +1,42 @@
+version: '3'
+services:
+  dnsmasq:
+    container_name: dnsmasq
+    image: lan-cache/dnsmasq
+    build: ./docker-dnsmasq
+    network_mode: "host"
+    ports:
+    - "53:53"
+    - "53:53/udp"
+    volumes:
+    - ./docker-dnsmasq/start-dnsmasq.sh:/usr/bin/start-dnsmasq.sh
+    - ./data/conf:/etc/dnsmasq.template.d
+    - ./data/dnsmasq.conf:/etc/dnsmasq.conf
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+  nginx:
+    container_name: nginx
+    image: lan-cache/nginx
+    build: ./docker-nginx
+    network_mode: "host"
+    ports:
+    - "80:80"
+    volumes:
+    - ./data/conf:/etc/nginx/conf.d
+    - ./data/nginx.conf:/etc/nginx/nginx.conf
+    - ./data/cache:/cache
+    - ./data/logs:/var/log/nginx
+    restart: unless-stopped
+
+  sniproxy:
+    container_name: sniproxy
+    image: lan-cache/sniproxy
+    build: ./docker-sniproxy
+    network_mode: "host"
+    ports:
+    - "443:443"
+    volumes:
+    - ./data/sniproxy.conf:/etc/sniproxy.conf
+    restart: unless-stopped
