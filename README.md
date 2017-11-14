@@ -5,6 +5,7 @@
 * Origin
 * Blizzard
 * League of Legends
+* ArenaNet (Guild Wars)
 
 Some of the folowing may require SSL certificate spoofing to work, and come untested. Please test the following in your environment before relying on them.
 * Sony (PS4)
@@ -74,8 +75,8 @@ Some of the folowing may require SSL certificate spoofing to work, and come unte
     You should see your caching server IP listed twice this time. The caching machine handles the DNS request as well as the caching that URL, so the caching machine IP is returned.
 
 * Test caching by downloading a game and watching the logs and cache directories:
-    * Use `ll /data/logs/` from the caching machine to check if the logs are filling up. You should see sizes increase as traffic is handled.
-    * Use `du -h -d 1 /data/cache` from the caching machine to see the actual size of each cache.
+    * Use `ll data/logs/` from the caching machine to check if the logs are filling up. You should see sizes increase as traffic is handled.
+    * Use `du -h -d 1 data/cache` from the caching machine to see the actual size of each cache.
 
 * Uninstall and redownload the game. You should see it download much quicker this time, without much (if any) internet traffic.
 
