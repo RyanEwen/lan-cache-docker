@@ -18,6 +18,7 @@ Some of the folowing may require SSL certificate spoofing to work, and come unte
 
     ```
     curl -sSL https://get.docker.com | sudo bash
+    sudo usermod -aG docker your-user
     ```
 
 1. Install Docker Compose if you don't have it:
@@ -32,14 +33,14 @@ Some of the folowing may require SSL certificate spoofing to work, and come unte
     git clone https://github.com/RyanEwen/lan-cache-docker.git
     ```
 
-1. Build docker images and spawn containers:
+1. Build docker images and spawn container instances:
 
     ```
     cd lan-cache-docker
     docker-compose up -d
     ```
 
-    The containers will start up automatically at boot, unless manually stopped.
+    The containers will start up automatically at each boot, unless manually stopped.
 
 1. Test (optional but recommended). See `How to test` below.
 

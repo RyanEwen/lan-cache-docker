@@ -1,6 +1,6 @@
 #!/bin/bash
 
-wget http://nginx.org/download/nginx-1.13.1.tar.gz
+wget http://nginx.org/download/nginx-1.13.6.tar.gz
 tar -xf nginx*
 cd nginx*
 
