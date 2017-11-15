@@ -1,6 +1,6 @@
-# Simple LAN Cache using Docker, Dnsmasq, and NGINX
+# A Simple LAN Cache Using Docker
 
-## Caches the following services for reduced internet traffic and quicker installs:
+## Reduce internet traffic and increase install speeds for:
 * Steam
 * Origin
 * Uplay
