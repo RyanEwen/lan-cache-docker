@@ -6,8 +6,9 @@
 * Blizzard
 * League of Legends
 * ArenaNet (Guild Wars)
+* Uplay
 
-Some of the folowing may require SSL certificate spoofing to work, and come untested. Please test the following in your environment before relying on them.
+The folowing are untested and may require SSL certificate spoofing to work. Please test the following in your environment before relying on them.
 * Microsoft
 * Xbox
 * PlayStation
