@@ -16,10 +16,10 @@ The folowing are untested and may require SSL certificate spoofing to work (not 
 * Hirez
 * Epic Games (needs SSL spoofing)
 
-## Setup Instructions
+## Quick Start
 1. Build the docker images and spawn container instances:
     * `docker-compose up -d`
-    * Full setup instructions can be found [in the Wiki](https://github.com/RyanEwen/lan-cache-docker/wiki/Quick-Start)
+    * Full setup instructions can be found [in the Wiki](https://github.com/RyanEwen/lan-cache-docker/wiki/Setup-instructions)
 
 1. Test it out:
     * `nslookup steamcache.cs.steampowered.com <ip-address-of-caching-machine>`
@@ -38,7 +38,7 @@ There are 3 docker containers that take care of proxying and caching traffic:
 In short: when the machine running these containers is used as a DNS server by other machines, dnsmasq handles DNS requests to redirect traffic to NGINX on the same machine, which caches data to disk and can serve it out to clients.
 
 ## Adding or updating services
-1. Instructions can be found [in the Wiki](https://github.com/RyanEwen/lan-cache-docker/wiki/Adding-or-updating-services).
+* Instructions can be found [in the Wiki](https://github.com/RyanEwen/lan-cache-docker/wiki/Adding-or-updating-services).
 
 ## Credits
 This is a fork of [OpenSourceLAN's origin-docker](https://github.com/OpenSourceLAN/origin-docker) which I decided to dive deep into and ended up reorganizing quite a bit. Credit is due over there :)
