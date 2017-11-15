@@ -8,12 +8,12 @@
 * ArenaNet (Guild Wars)
 * Uplay
 
-The folowing are untested and may require SSL certificate spoofing to work. Please test the following in your environment before relying on them.
+The folowing are untested and may require SSL certificate spoofing to work (not covered here). Please test the following in your environment before relying on them.
 * Microsoft
 * Xbox
 * PlayStation
 * Hirez
-* Epic Games
+* Epic Games (needs SSL spoofing)
 
 ## Quick Start (Linux)
 1. Install Docker if you don't have it:
