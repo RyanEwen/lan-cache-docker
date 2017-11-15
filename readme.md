@@ -3,10 +3,10 @@
 ## Caches the following services for reduced internet traffic and quicker installs:
 * Steam
 * Origin
+* Uplay
 * Blizzard
 * League of Legends
 * ArenaNet (Guild Wars 2)
-* Uplay
 * Frontier (Elite Dangerous)
 
 The folowing are untested and may require SSL certificate spoofing to work (not covered here).
@@ -17,28 +17,31 @@ The folowing are untested and may require SSL certificate spoofing to work (not 
 * Epic Games (needs SSL spoofing)
 
 ## Quick Start
-1. Build the docker images and spawn container instances:
+1. Build the docker images and spawn docker containers:
     * `docker-compose up -d`
     * Full setup instructions can be found [in the Wiki](https://github.com/RyanEwen/lan-cache-docker/wiki/Setup-instructions)
 
-1. Test it out:
-    * `nslookup steamcache.cs.steampowered.com <ip-address-of-caching-machine>`
+1. Test your cache server from another machine:
+    * `nslookup steamcontent.com <ip-of-cache-server>`
     * Full testing instructions can be found [in the Wiki](https://github.com/RyanEwen/lan-cache-docker/wiki/How-to-test)
 
-1. Direct traffic to the caching server:
-    * Configure your router to use your caching server IP for DNS.
-    Some routers allow you to change the DNS server IPs on the WAN settings page. Failing that, check the LAN settings page. You can also point machines directly to the caching server individually by changing their individual DNS settings instead.
+1. Direct network traffic to your cache server:
+    * Configure your router to use the cache server as a DNS server.
+    Some routers have this setting on WAN settings page. Failing that, check the LAN settings page.
+    * Alternatively you can configure individual machines by changing the DNS server address in their network settings.
 
 ## How this works
-There are 3 docker containers that take care of proxying and caching traffic:
-* `dnsmasq`: Runs dnsmasq DNS server to redirect game download traffic to NGINX.
-* `nginx`: Runs NGINX web server which is setup to act as an HTTP proxy, caching and serving game downloads.
-* `sniproxy`: Runs SNI Proxy which allows HTTPS traffic to pass through to the actual service it's intended for, without decrypting it. This doesn't allow HTTPS to be cached and instead simply prevents HTTPS requests from breaking.
-
-In short: when the machine running these containers is used as a DNS server by other machines, dnsmasq handles DNS requests to redirect traffic to NGINX on the same machine, which caches data to disk and can serve it out to clients.
+There are 3 docker containers that make up the cache server:
+* `dnsmasq`: Uses Dnsmasq DNS server to redirect requests for game downloads to the cache server.
+* `nginx`: Uses NGINX web server as an HTTP proxy and to cache HTTP requests for game downloads.
+* `sniproxy`: Uses SNI Proxy server as an HTTPS proxy to prevent redirected HTTPS traffic from 404-ing. This traffic cannot be cached so it's simply passed-through without decryption.
 
 ## Adding or updating services
 * Instructions can be found [in the Wiki](https://github.com/RyanEwen/lan-cache-docker/wiki/Adding-or-updating-services).
 
+## Help
+* Check the [Wiki](https://github.com/RyanEwen/lan-cache-docker/wiki) first.
+* Please report issues or request help [here](https://github.com/RyanEwen/lan-cache-docker/issues)
+
 ## Credits
-This is a fork of [OpenSourceLAN's origin-docker](https://github.com/OpenSourceLAN/origin-docker) which I decided to dive deep into and ended up reorganizing quite a bit. Credit is due over there :)
+This started as a fork of [OpenSourceLAN's origin-docker](https://github.com/OpenSourceLAN/origin-docker) which I decided to dive deep into and ended up reorganizing quite a bit. Credit is due over there :)
