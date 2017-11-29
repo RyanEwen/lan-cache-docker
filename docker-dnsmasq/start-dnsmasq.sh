@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 get_ip() {
   interface=$(ip route | grep default | awk '{print $(NF)}')

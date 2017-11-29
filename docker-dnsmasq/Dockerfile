@@ -1,6 +1,6 @@
-FROM ubuntu:16.04
+FROM alpine:latest
 
-RUN apt-get update
-RUN apt-get install -y dnsmasq
+RUN set -ex \
+  && apk add --no-cache dnsmasq
 
 CMD ["start-dnsmasq.sh"]

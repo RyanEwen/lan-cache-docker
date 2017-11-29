@@ -1,15 +1,55 @@
-FROM ubuntu:latest
+FROM alpine:latest
 
-RUN apt-get update && apt-get install -y build-essential libssl-dev libpcre3 libpcre3-dev zlib1g zlib1g-dev
-RUN apt-get install -y wget
+ENV NGINX_VERSION 1.13.6
 
-RUN mkdir /build
-WORKDIR /build
-ADD build-nginx.sh /build/build-nginx.sh
-RUN /build/build-nginx.sh
+WORKDIR /tmp
 
-RUN rm -rf /etc/nginx/conf.d/* /etc/nginx/sites-enabled/*
-RUN mkdir -p /var/lib/nginx/body
-RUN mkdir -p /var/lib/nginx/fastcgi
+RUN set -ex \
+  && apk add --no-cache \
+    ca-certificates \
+    libressl \
+    pcre \
+    zlib \
+  && apk add --no-cache --virtual .build-deps \
+    build-base \
+    linux-headers \
+    libressl-dev \
+    pcre-dev \
+    wget \
+    zlib-dev \
+  && cd /tmp \
+  && wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
+  && tar xzf nginx-${NGINX_VERSION}.tar.gz \
+  && cd /tmp/nginx-${NGINX_VERSION} \
+  && ./configure \
+    --prefix=/usr \
+    --conf-path=/etc/nginx/nginx.conf \
+    --error-log-path=/var/log/nginx/error.log \
+    --http-client-body-temp-path=/var/lib/nginx/body \
+    --http-fastcgi-temp-path=/var/lib/nginx/fastcgi \
+    --http-log-path=/var/log/nginx/access.log \
+    --http-proxy-temp-path=/var/lib/nginx/proxy \
+    --lock-path=/var/lock/nginx.lock \
+    --pid-path=/var/run/nginx.pid \
+    --with-http_gzip_static_module \
+    --with-http_ssl_module \
+    --with-ipv6 \
+    --without-http_browser_module \
+    --without-http_geo_module \
+    --without-http_limit_req_module \
+    --without-http_memcached_module \
+    --without-http_referer_module \
+    --without-http_scgi_module \
+    --without-http_split_clients_module \
+    --with-http_stub_status_module \
+    --without-http_ssi_module \
+    --without-http_userid_module \
+    --without-http_uwsgi_module \
+    --with-http_slice_module \
+  && make -j$(getconf _NPROCESSORS_ONLN) \
+  && make install \
+  && mkdir -p /var/cache/nginx /var/lib/nginx/body \
+  && apk del .build-deps \
+  && rm -rf /tmp/* /etc/nginx/conf.d/* /etc/nginx/sites-enabled/*
 
 CMD nginx -g "daemon off;" -c /etc/nginx/nginx.conf
