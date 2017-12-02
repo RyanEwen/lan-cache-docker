@@ -46,6 +46,8 @@ RUN set -ex \
     --without-http_userid_module \
     --without-http_uwsgi_module \
     --with-http_slice_module \
+    --with-threads \
+    --with-file-aio \
   && make -j$(getconf _NPROCESSORS_ONLN) \
   && make install \
   && mkdir -p /var/cache/nginx /var/lib/nginx/body \
