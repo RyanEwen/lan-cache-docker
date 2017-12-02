@@ -4,17 +4,17 @@
 * Steam
 * Origin
 * Uplay
-* Blizzard
+* Blizzard (Including Destiny 2)
 * League of Legends
 * ArenaNet (Guild Wars 2)
 * Frontier (Elite Dangerous)
+* Microsoft (Windows Updates)
 
 The folowing are untested and may require SSL certificate spoofing to work (not covered here).
-* Microsoft
 * Xbox
 * PlayStation
 * Hirez
-* Epic Games (needs SSL spoofing)
+* Epic Games (needs SSL spoofing to work)
 
 ## Quick Start
 1. Build the docker images and spawn docker containers:
