@@ -18,7 +18,7 @@ The folowing are untested and may require SSL certificate spoofing to work (not 
 
 ## Quick Start
 1. Build the docker images and spawn docker containers:
-    * `docker-compose up -d`
+    * `docker-compose up --build -d`
     * Full setup instructions can be found [in the Wiki](https://github.com/RyanEwen/lan-cache-docker/wiki/Setup-instructions)
 
 1. Test your cache server from another machine:
