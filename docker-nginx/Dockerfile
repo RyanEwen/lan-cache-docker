@@ -10,6 +10,7 @@ RUN set -ex \
     libressl \
     pcre \
     zlib \
+    logrotate \
   && apk add --no-cache --virtual .build-deps \
     build-base \
     linux-headers \
@@ -54,4 +55,9 @@ RUN set -ex \
   && apk del .build-deps \
   && rm -rf /tmp/* /etc/nginx/conf.d/* /etc/nginx/sites-enabled/*
 
-CMD nginx -g "daemon off;" -c /etc/nginx/nginx.conf
+COPY logrotate.conf /etc/logrotate.d/nginx
+
+RUN set -ex \
+  && chmod 0644 /etc/logrotate.d/nginx
+
+CMD ["start-nginx.sh"]
