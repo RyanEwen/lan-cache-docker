@@ -1,8 +1,8 @@
 #!/bin/sh
 
 get_ip() {
-  interface=$(ip route | grep default | awk '{print $(NF)}')
-  ip addr show dev $interface | grep 'inet ' | grep -o '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*' | head -n 1
+  interface=$(route | grep default | awk '{print $(NF)}')
+  ip route show dev $interface| grep -w "link" | awk -F " " '{print $NF}'
 }
 
 if [[ -z $HOST_IP ]]; then
