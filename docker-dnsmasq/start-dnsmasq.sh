@@ -2,7 +2,7 @@
 
 get_ip() {
   interface=$(route | grep default | awk '{print $(NF)}')
-  ip route show dev $interface| grep -w "link" | awk -F " " '{print $NF}'
+  ip route show dev $interface | grep -Pom1 'link\s+src\s+\d+\.\d+\.\d+\.\d+' | awk -F " " '{print $NF}'
 }
 
 if [[ -z $HOST_IP ]]; then
